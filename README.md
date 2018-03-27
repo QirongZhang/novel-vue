@@ -1,6 +1,6 @@
 # novel-vue
 
-> A duke-novel-system with vue
+> 读客中文网，使用vue编写的小说阅读系统
 
 ## Build Setup
 
