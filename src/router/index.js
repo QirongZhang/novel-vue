@@ -13,59 +13,76 @@ import Novel from '@/pages/novel'
 
 Vue.use(Router)
 
+//静态路由
+export const constantRouterMap = [
+  {
+    path: '/',
+    component: LayoutPage,
+    // redirect: '/index',
+    children: [
+      {
+        path: '',
+        name: 'index',
+        component: IndexPage
+      },
+      {
+        path: 'read/:chapterId',
+        name: 'read',
+        component: ReadPage
+      },
+      {
+        path: 'chapter/:novelId',
+        name: 'chapter',
+        component: ChapterPage
+      },
+      {
+        path: 'author',
+        name: 'author',
+        component: AuthorPage
+      },
+      {
+        path: 'novel/:categoryId',
+        name: 'novel',
+        component: Novel
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: UserLayoutPage,
+    children: [
+      {
+        path: 'sign',
+        component: SignPage
+      },
+      {
+        path: 'login',
+        component: LoginPage
+      }
+    ]
+  }
+]
+
 export default new Router({
   // mode: 'history',
-  routes: [
-    {
-      path: '/',
-      component: LayoutPage,
-      // redirect: '/index',
-      children: [
-        {
-          path: '',
-          name: 'index',
-          component: IndexPage
-        },
-        {
-          path: 'read/:chapterId',
-          name: 'read',
-          component: ReadPage
-        },
-        {
-          path: 'chapter/:novelId',
-          name: 'chapter',
-          component: ChapterPage
-        },
-        {
-          path: 'bookshelf',
-          name: 'bookshelf',
-          component: BookShelfPage
-        },
-        {
-          path: 'author',
-          name: 'author',
-          component: AuthorPage
-        },
-        {
-          path: 'novel/:categoryId',
-          name: 'novel',
-          component: Novel
-        }
-      ]
-    },
-    {
-      path: '/user',
-      component: UserLayoutPage,
-      children: [
-        {
-          path: 'sign',
-          component: SignPage
-        },
-        {
-          path: 'login',
-          component: LoginPage
-        }
-      ]
-    }
-  ]
+  routes: constantRouterMap
 })
+
+//异步挂载的路由
+//根据需求动态获取的路由
+export const asyncRouterMap = [
+  {
+    path: 'bookshelf',
+    name: 'bookshelf',
+    meta: {
+      title: '',
+      roles: ['user']
+    },
+    component: BookShelfPage
+  },
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
+]

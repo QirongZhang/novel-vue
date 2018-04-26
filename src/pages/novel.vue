@@ -3,7 +3,7 @@
     <div class="author-work">
       <div class="inner">
         <div class="title">
-          <span>我的书架</span>
+          <span>小说列表</span>
         </div>
         <div class="work-list">
           <div v-for="novel in novelList" class="work-item">

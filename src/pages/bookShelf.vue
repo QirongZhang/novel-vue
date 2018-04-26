@@ -113,7 +113,7 @@
 
   .author-work .book-add {
     position: absolute;
-    bottom: 3px;
+    bottom: 5px;
   }
 
   .author-work .book-add > a {

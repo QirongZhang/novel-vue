@@ -13,7 +13,7 @@
         <div class="cata">
           <ul>
             <li v-for="category in categoryList">
-              <router-link :to="{name: 'novel',params: {categoryId: category.categoryId}}">{{category.categoryName}}</router-link>
+              <router-link :to="{name: 'novel',params: {categoryId:  category.categoryId }}">{{category.categoryName}}</router-link>
             </li>
           </ul>
         </div>
