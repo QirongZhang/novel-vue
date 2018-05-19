@@ -7,7 +7,7 @@
     <!--<el-breadcrumb-item>第十二章伏兵之计</el-breadcrumb-item>-->
     <!--</el-breadcrumb>-->
 
-    <div class="side-bar">
+    <!--<div class="side-bar">
       <div class="item">
         <div><img class="item-img" src="../assets/images/cata.png"></div>
         <div>目录</div>
@@ -17,23 +17,19 @@
           <a v-for="item in lists" :href="getURL(item.chapter_id, item.story_id)">{{ item.chapter_name }}</a>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="side-content">
       <div class="inner">
-        <a class="chap-left chap disable"
-           href="">
+        <a v-bind:class="chapLeft" @click="clickLeft">
           <img src="../assets/images/left.png" alt="">前一章</a>
-        <a class="chap-right chap"
-           href="">
+        <a class="chap-right chap" @click="clickRight">
           后一章<img src="../assets/images/right.png" alt=""></a>
         <div class="content" style="white-space:pre-wrap">
           <span v-html="chapter.chapterContent"></span>
         </div>
-        <a class="chap-left chap"
-           href="/ChapterAction!findByID?chapter_id=${chapter_id-1 }&story_id=${story_id}">
+        <a v-bind:class="chapLeft" @click="clickLeft">
           <img src="../assets/images/left.png" alt="">前一章</a>
-        <a class="chap-right chap"
-           href="">
+        <a class="chap-right chap" @click="clickRight">
           后一章<img src="../assets/images/right.png" alt=""></a>
       </div>
     </div>
@@ -42,16 +38,18 @@
 
 <script>
   export default {
-    whatch: {
+    watch: {
       '$route.params'(to, from) {
         this.getData4ChapterDetail();
       }
     },
     created: function () {
       this.getData4ChapterDetail();
+      this.chapLeftRight();
     },
     methods: {
       getData4ChapterDetail() {
+        console.log('xxxx');
         let chapterId = this.$route.params.chapterId;
         if (typeof (chapterId) !== 'undefined') {
           this.$http({
@@ -64,12 +62,50 @@
             console.log(error);
           });
         }
+      },
+      chapLeftRight() {
+        if (this.chapter.ordBy === 1) {
+          this.chapLeft.disable = true;
+        }else {
+          this.chapLeft.disable = false;
+        }
+
+      },
+      clickLeft() {
+        this.$http({
+          method: 'get',
+          url: '/chapter/detailByOrder?novelId=' + this.chapter.novelId + '&ordBy=' + (this.chapter.ordBy - 1),
+        }).then((response) => {
+          console.log(response.data);
+          this.chapter = response.data;
+        }).catch((error) => {
+          console.log(error);
+        });
+      },
+      clickRight() {
+        this.$http({
+          method: 'get',
+          url: '/chapter/detailByOrder?novelId=' + this.chapter.novelId + '&ordBy=' + (this.chapter.ordBy + 1),
+        }).then((response) => {
+          this.chapter = response.data;
+          console.log(this.chapter.ordBy);
+          this.chapLeftRight();
+          console.log(this.chapter.ordBy);
+        }).catch((error) => {
+          console.log(error);
+        });
       }
+
     },
     data() {
       return {
         chapter: {},
-        lists: []
+        lists: [],
+        chapLeft: {
+          'chap-left': true,
+          chap: true,
+          disable: false
+        }
       }
     }
   }
@@ -158,7 +194,7 @@
     line-height: 2em;
     padding: 30px 20px;
     white-space: pre-wrap;
-    text-indent:2em;
+    text-indent: 2em;
   }
 
   .side-content .content p {
@@ -199,5 +235,15 @@
 
   .side-content .chap-right {
     margin-left: 17px;
+  }
+
+  a {
+    text-decoration: none;
+    color: black !important;
+    cursor: pointer;
+  }
+
+  a:HOVER {
+    color: red !important;
   }
 </style>

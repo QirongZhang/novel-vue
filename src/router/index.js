@@ -10,6 +10,7 @@ import LoginPage from '@/pages/login'
 import BookShelfPage from '@/pages/bookShelf'
 import AuthorPage from '@/pages/author'
 import Novel from '@/pages/novel'
+import Search from '@/pages/search'
 
 Vue.use(Router)
 
@@ -44,6 +45,16 @@ export const constantRouterMap = [
         path: 'novel/:categoryId',
         name: 'novel',
         component: Novel
+      },
+      {
+        path: 'search/:novelName',
+        name: 'search',
+        component: Search
+      },
+      {
+        path: 'bookshelf',
+        name: 'bookshelf',
+        component: BookShelfPage
       }
     ]
   },

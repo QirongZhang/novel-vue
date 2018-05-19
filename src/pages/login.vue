@@ -12,16 +12,16 @@
           <div class="login-form">
             <form action="" id="loginForm">
               <div class="input-wrap">
-                <label for="userName" class="user-icon"></label>
-                <input type="text" name="reader" id="userName" placeholder="用户名">
+                <label for="account" class="user-icon"></label>
+                <input v-model="account" type="text" name="account" id="account" placeholder="用户名">
               </div>
               <div class="input-wrap input-wrap--last">
                 <label for="password" class="pass-icon"></label>
-                <input type="password" name="password" id="password" placeholder="密码">
+                <input v-model="password" type="password" name="password" id="password" placeholder="密码">
               </div>
               <input type="hidden" name="user" value="1">
               <div class="btn-wrap">
-                <input type="button" value="登录" id="login">
+                <input type="button" value="登录" id="login" v-on:click="login">
               </div>
             </form>
           </div>
@@ -34,7 +34,36 @@
 <script>
   export default {
     data() {
-      return {}
+      return {
+        account: '',
+        password: ''
+      }
+    },
+    methods: {
+      login: function () {
+        /**
+         * 获取类别列表
+         */
+        this.$http({
+          method: 'post',
+          url: '/loginFront/login',
+          data: {
+            "account": this.account,
+            "password": this.password
+          }
+        }).then((response) => {
+          if(response.data.flag) {
+            this.$router.push('/');
+            location.reload();
+          }else{
+            alert(response.data.massage);
+          }
+          console.log(response.data);
+
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
     }
   }
 </script>

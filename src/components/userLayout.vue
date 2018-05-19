@@ -3,7 +3,7 @@
     <div class="header">
       <div class="inner">
         <div class="logo-wrap">
-          <router-link :to="{ path: '/index' }">
+          <router-link :to="{ path: '/' }">
             <img src="../assets/logo.png">
             <span class="sperate"></span>
           </router-link>

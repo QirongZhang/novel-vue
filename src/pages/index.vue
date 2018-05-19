@@ -22,24 +22,13 @@
             <div class="slider" id="slider">
               <div class="container">
                 <slide-show :slides="slides" :inv="inv"></slide-show>
-
-                <!--<el-carousel indicator-position="outside" height="">-->
-                  <!--<el-carousel-item v-for="item in 4" :key="item">-->
-                    <!--<h3><img src="../assets/images/test2.png"/></h3>-->
-                  <!--</el-carousel-item>-->
-                <!--</el-carousel>-->
-                <!--<div class="img-sets" :style="styleObj">-->
-                <!--<a v-for="item in lists" :href="item.url">-->
-                <!--<img :src="item.img">-->
-                <!--</a>-->
-                <!--</div>-->
               </div>
             </div>
             <div class="publicity">
               <div class="content">
                 <div class="title">公告</div>
                 <div v-for="notice in noticeList" class="item">
-                  <a href="">{{notice.noticeName}}</a>
+                  <a>{{notice.content}}</a>
                 </div>
               </div>
             </div>
@@ -52,7 +41,23 @@
       <div class="inner">
         <div class="intro">
           <div class="title">小编推荐</div>
-          <div class="books" id="books"></div>
+          <div class="books" id="books">
+            <div class="book" v-for="novel in novelList">
+              <router-link :to="{name: 'chapter',params: {novelId:  novel.novelId }}">
+                <img :src="novel.novelPic" style="width: 120px; height:172px; float: left;"/>
+                <div class="book-title">{{novel.novelName}}</div>
+              </router-link>
+              <div class="intro"><span v-html="novel.introduction"/></div>
+              <div class="author">
+                <!--         	<a href="<%=path %>/AuthorAction!findAuthorByAuthorName?author_id=${storyBeans.author_id}&author_name=${storyBeans.author}">
+                 -->
+                <a>
+                  <img src="../assets/images/head.png" style="width: 1.3em;vertical-align: middle;margin-right: 0.5em;">
+                  作者：{{novel.author}}
+                </a>
+              </div>
+            </div>
+          </div>
           <div class="cls"></div>
         </div>
       </div>
@@ -70,6 +75,7 @@
       return {
         categoryList: [],
         noticeList: [],
+        novelList: [],
         slides: [
           {
             src: require('@/assets/slideShow/pic1.png'),
@@ -96,31 +102,64 @@
       }
     },
     created: function () {
-      this.$http({
-        method: 'get',
-        url: '/category/list',
-      }).then( (response)=> {
-        console.log(response.data);
+      this.getCategoryList();
+      this.getRecommendNovelList();
+      this.getNoticeList();
+    },
+    methods: {
+      getCategoryList(){
         /**
-         * 这个地方this指针不能指向vue
+         * 获取类别列表
          */
-        this.categoryList  = response.data;
-      }).catch(function (error) {
-        console.log(error);
-      });
+        this.$http({
+          method: 'get',
+          url: '/category/list',
+        }).then( (response)=> {
+          console.log(response.data);
+          /**
+           * 这个地方this指针不能指向vue
+           */
+          this.categoryList  = response.data;
+        }).catch(function (error) {
+          console.log(error);
+        });
+      },
+      getRecommendNovelList(){
+        this.$http({
+          method: 'get',
+          url: '/novel/recommendNovels',
+        }).then( (response)=> {
+          console.log(response.data);
+          /**
+           * 这个地方this指针不能指向vue
+           */
+          this.novelList  = response.data.records;
 
+        }).catch(function (error) {
+          console.log(error);
+        });
+      },
+      getNoticeList(){
+        /**
+         * 获取公告列表
+         */
+        this.$http({
+          method: 'get',
+          url: '/novel/selectList4Front',
+        }).then( (response)=> {
+          console.log('notice = ');
+          console.log(response.data);
+          /**
+           * 这个地方this指针不能指向vue
+           */
+          this.noticeList  = response.data;
+
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
     }
   }
-
-
-
-
-  //          {noticeName: '这是公告！'},
-  //          {noticeName: '这是公告！'},
-  //          {noticeName: '这是公告！'},
-  //          {noticeName: '这是公告！'},
-  //          {noticeName: '这是公告！'},
-  //          {noticeName: '这是公告！'},
 
 </script>
 
@@ -271,13 +310,15 @@
   }
 
   .bottom-banner .books {
+    width: 95%;
     float: left;
   }
 
   .bottom-banner .books .book {
-    width: 268px;
+    width: 21%;
     float: left;
     margin-left: 20px;
+    margin-bottom: 20px;
     position: relative;
   }
 
@@ -323,6 +364,7 @@
   a {
     text-decoration: none;
     color: black !important;
+    cursor:pointer;
   }
 
   a:hover {

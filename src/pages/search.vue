@@ -3,7 +3,7 @@
     <div class="author-work">
       <div class="inner">
         <div class="title">
-          <span>小说列表</span>
+          <span>搜索列表</span>
         </div>
         <div class="work-list">
           <div v-for="novel in novelList" class="work-item">
@@ -40,15 +40,16 @@
     },
     methods: {
       getData4NovelList() {
-        let categoryId = this.$route.params.categoryId;
-        if (typeof (categoryId) !== 'undefined') {
+        let novelName = this.$route.params.novelName;
+        if (typeof (novelName) !== 'undefined') {
           this.$http({
             method: 'get',
-            url: '/novel/listByCategoryId/' + categoryId,
+            url: '/novel/listByNovelName/'+novelName,
           }).then((response) => {
+            this.novelList = response.data;
             console.log(response.data);
-            this.novelList = response.data.records;
-          }).catch((error) => {
+
+          }).catch(function (error) {
             console.log(error);
           });
         }

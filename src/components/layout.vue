@@ -3,11 +3,17 @@
     <div class="header">
       <div class="inner">
         <div class="user-panel">
-          <router-link :to="{ path: '/user/login' }" class="login">登录</router-link>
-          <!--<a href="" class="login">登录</a>-->
-          <span></span>
-          <router-link :to="{ path: '/user/sign' }" class="sign">注册</router-link>
-          <!--<a href="" class="sign">注册</a>-->
+          <div v-if="account != ''">
+            <router-link :to="{ path: '/' }" class="login">{{account}}</router-link>
+            <span></span>
+            <a class="sign" @click="clearCookie">注销</a>
+          </div>
+          <div v-if="account == ''">
+            <router-link :to="{ path: '/user/login' }" class="login">登录</router-link>
+            <span></span>
+            <router-link :to="{ path: '/user/sign' }" class="sign">注册</router-link>
+          </div>
+
         </div>
         <div class="cls"></div>
 
@@ -60,20 +66,24 @@
             </router-link>
           </div>
           <div class="book-shelf-wrapper">
-            <router-link :to="{ path: '/bookshelf' }" class="book-shelf">
+            <a class="book-shelf" @click="checkCookieForBookShelf">
               <img src="" alt="">
               <span>我的书架</span>
-            </router-link>
+            </a>
+            <!--<router-link @click="checkCookieForBookShelf" class="book-shelf">
+              <img src="" alt="">
+              <span>我的书架</span>
+            </router-link>-->
           </div>
           <div class="search-wrapper">
             <div class="search-btn-wrapper">
-              <button id="searchBtn" class="search-btn" type="button">
+              <button id="searchBtn" class="search-btn" type="button" @click="searchNovel">
                 <img src="../assets/images/search.png">
               </button>
             </div>
             <div class="text-wrapper">
               <div>
-                <input type="text" id="searchQuery" placeholder="搜索你想看的小说">
+                <input type="text" id="searchQuery" v-model="searchQuery" placeholder="搜索你想看的小说">
               </div>
             </div>
           </div>
@@ -102,12 +112,63 @@
         formInline: {
           activeIndex2: '1',
           query: ' '
-        }
+        },
+        account:'',
+        searchQuery: ''
       }
+    },
+    created: function () {
+      this.checkCookie();
     },
     methods: {
       handleSelect(key, keyPath) {
         console.log(key, keyPath)
+      },
+      //设置cookie
+      setCookie: function (cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        console.info(cname + "=" + cvalue + "; " + expires);
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+        console.info(document.cookie);
+      },
+      //获取cookie
+      getCookie: function (cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') c = c.substring(1);
+          if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+      },
+      //清除cookie
+      clearCookie: function () {
+        this.setCookie("account", "", -1);
+        location.reload();
+      },
+      checkCookie: function () {
+        var user = this.getCookie("account");
+        if (user != "") {
+          this.account = user;
+        }
+      },
+      checkCookieForBookShelf:function () {
+        var user = this.getCookie("account");
+        if (user != "") {
+          this.account = user;
+          this.$router.push('/bookshelf');
+        }else {
+          this.$router.push('/user/login');
+        }
+      },
+      searchNovel:function () {
+        debugger
+        if (typeof (this.searchQuery) !== 'undefined' && this.searchQuery != '') {
+          this.$router.push({ name: 'search', params: { novelName: this.searchQuery }});
+        }
       }
     }
   }
@@ -249,6 +310,7 @@
   a {
     text-decoration: none;
     color: black !important;
+    cursor:pointer;
   }
 
   a:hover {

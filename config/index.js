@@ -31,7 +31,28 @@ module.exports = {
         pathRewrite: {
           '^/chapter': ''
         }
-      }
+      },
+      '/loginFront': {//此处并非一定和url一致。
+        target: 'http://localhost:8089/loginFront',
+        changeOrigin: true,//允许跨域
+        pathRewrite: {
+          '^/loginFront': ''
+        }
+      },
+      '/bookshelf': {//此处并非一定和url一致。
+        target: 'http://localhost:8089/bookshelf',
+        changeOrigin: true,//允许跨域
+        pathRewrite: {
+          '^/bookshelf': ''
+        }
+      },
+      '/notice': {//此处并非一定和url一致。
+        target: 'http://localhost:8089/notice',
+        changeOrigin: true,//允许跨域
+        pathRewrite: {
+          '^/notice': ''
+        }
+      },
     },
 
     // Various Dev Server settings

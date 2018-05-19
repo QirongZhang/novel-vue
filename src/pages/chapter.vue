@@ -12,7 +12,7 @@
             <span class="author"><img src="../assets/images/head.png">作者：{{novel.author}}</span>
           </div>
           <div class="action">
-            <a href=''>添加到书架</a>
+            <a @click="addBookShelf(novel.novelId)">添加到书架</a>
           </div>
         </div>
         <div class="novel-nav">
@@ -75,6 +75,38 @@
             console.log(error);
           });
         }
+      },
+      addBookShelf(novelId) {
+        var user = this.getCookie("account");
+        if (user != "") {
+          /**
+           * 异步请求，将书本添加到书架
+           */
+          this.$http({
+            method: 'get',
+            url: '/bookshelf/add?novelId=' + novelId
+          }).then((response) => {
+            if (response.data.flag) {
+              alert(response.data.massage);
+            }
+
+          }).catch(function (error) {
+            console.log(error);
+          });
+        } else {
+          this.$router.push('/user/login');
+        }
+      },
+      //获取cookie
+      getCookie: function (cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') c = c.substring(1);
+          if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
       }
     },
     data() {
@@ -193,6 +225,12 @@
     text-align: center;
     color: #000;
     font-size: 0.75rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: black !important;
+    cursor: pointer;
   }
 
   a:HOVER {

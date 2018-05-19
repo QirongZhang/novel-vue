@@ -10,22 +10,22 @@
             <form id="registerForm">
               <div class="text-wrap">
                 <span for="nickname">昵称</span>
-                <input type="text" id="nickname" name="nickname" placeholder="2-10个字符">
+                <input v-model="name" type="text" id="nickname" name="nickname" placeholder="2-10个字符">
               </div>
               <div class="text-wrap">
                 <span for="mailbox">邮箱</span>
-                <input type="text" id="mailbox" name="mailbox" placeholder="输入邮箱地址">
+                <input v-model="email" type="text" id="mailbox" name="mailbox" placeholder="输入邮箱地址">
+              </div>
+              <div class="text-wrap">
+                <span for="qq">帐户</span>
+                <input v-model="account" type="text" placeholder="帐户">
               </div>
               <div class="text-wrap">
                 <span for="password">密码</span>
-                <input type="password" id="password" name="password" placeholder="6-20位大小写字母、数字或符号">
-              </div>
-              <div class="text-wrap">
-                <span for="qq">QQ</span>
-                <input type="text" id="qq" name="qq" placeholder="有效的QQ账号">
+                <input v-model="password" type="password" id="password" name="password" placeholder="6-20位大小写字母、数字或符号">
               </div>
               <div class="btn-wrap">
-                <button type="button" id="submit">注册</button>
+                <button type="button" id="submit" v-on:click="sign">注册</button>
               </div>
             </form>
           </div>
@@ -38,7 +38,39 @@
 <script>
   export default {
     data() {
-      return {}
+      return {
+        name: '',
+        email: '',
+        account: '',
+        password: ''
+      }
+    },
+    methods: {
+      sign: function () {
+        /**
+         * 获取类别列表
+         */
+        this.$http({
+          method: 'post',
+          url: '/loginFront/register',
+          data: {
+            'name': this.name,
+            'email': this.email,
+            'account': this.account,
+            'password': this.password
+          }
+        }).then((response) => {
+          if (response.data.flag) {
+            this.$router.push('/');
+          } else {
+            alert(response.data.massage);
+          }
+          console.log(response.data);
+
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
     }
   }
 </script>

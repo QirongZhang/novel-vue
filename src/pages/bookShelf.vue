@@ -7,15 +7,17 @@
         </div>
         <div class="work-list">
           <div v-for="novel in novelList" class="work-item">
-            <img :src='novel.bookCoverUrl' style="width: 10.5%;height: 126px;"
-                 :alt='novel.novelName'>
+            <img :src='novel.novel_pic' style="width: 10.5%;height: 126px;"
+                 :alt='novel.novel_name'>
             <div class="detail">
-              <div class="book-name"><a href="">{{novel.novelName}}</a></div>
+              <div class="book-name">
+                <router-link :to="{name:'chapter',params:{novelId: novel.novelId}}">{{novel.novelName}}</router-link>
+              </div>
               <!--
                 <div class="book-type">仙侠</div>-->
-              <div class="book-intro">{{novel.summary}}</div>
+              <div class="book-intro"><span v-html="novel.introduction"/></div>
               <div class="book-add">
-                <a href="">删除</a></div>
+                <a @click="delBookShelf(novel.novel_id,novel.user_id)">删除</a></div>
             </div>
           </div>
         </div>
@@ -28,28 +30,45 @@
   export default {
     data() {
       return {
-        novelList: [
-          {
-            bookCoverUrl: require('../assets/images/80.jpeg'),
-            novelName: '汉乡',
-            summary: '这是简介这是简介这是简介这是简介这是简介这是简介',
-          },
-          {
-            bookCoverUrl: require('../assets/images/80.jpeg'),
-            novelName: '汉乡',
-            summary: '这是简介这是简介这是简介这是简介这是简介这是简介',
-          },
-          {
-            bookCoverUrl: require('../assets/images/80.jpeg'),
-            novelName: '汉乡',
-            summary: '这是简介这是简介这是简介这是简介这是简介这是简介',
-          },
-          {
-            bookCoverUrl: require('../assets/images/80.jpeg'),
-            novelName: '汉乡',
-            summary: '这是简介这是简介这是简介这是简介这是简介这是简介',
-          },
-        ]
+        novelList: []
+      }
+    },
+    created: function () {
+      /**
+       * 获取类别列表
+       */
+      this.$http({
+        method: 'get',
+        url: '/bookshelf/listByUserId',
+      }).then((response) => {
+        console.log(response.data);
+        /**
+         * 这个地方this指针不能指向vue
+         */
+        this.novelList = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    methods: {
+      delBookShelf (novelId,userId) {
+        var flag = confirm("您确定要删除该条记录");
+        if (flag) {
+          /**
+           * 获取类别列表
+           */
+          this.$http({
+            method: 'get',
+            url: '/bookshelf/delete?novelId='+novelId+'&userId='+userId,
+          }).then((response) => {
+
+            console.log(response.data);
+            alert(response.data.massage);
+            location.reload();
+          }).catch(function (error) {
+            console.log(error);
+          });
+        }
       }
     }
   }
@@ -122,6 +141,12 @@
     background-color: #fff;
     color: #b81c14;
     padding: 5px;
+  }
+
+  a {
+    text-decoration: none;
+    color: black !important;
+    cursor: pointer;
   }
 
   a:HOVER {
